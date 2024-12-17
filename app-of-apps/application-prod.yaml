@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rjb45tbrh-nodejs-prod
+  namespace: rhtap
+  finalizers: ["resources-finalizer.argocd.argoproj.io"] 
+spec:
+  project: default
+  source:
+    path: ./components/rjb45tbrh-nodejs/overlays/prod
+    repoURL: https://github.com/RHTAP-RHDH/rjb45tbrh-nodejs-gitops.git
+    targetRevision: main
+  destination:
+    namespace: rhtap-app-prod
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels: 
+        argocd.argoproj.io/managed-by: rhtap
+    automated: 
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
